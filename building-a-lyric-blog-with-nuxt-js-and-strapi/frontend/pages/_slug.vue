@@ -1,8 +1,20 @@
 <template>
   <div class="home">
     <h1 class="headline center">
-      Lyric Blog
+      {{ article.title }}
     </h1>
+    <p class="center">
+      {{ article.description }}
+    </p>
+    <div class="sections center">
+      <div class="group center">
+        <p>{{ article.body }}</p>
+      </div>
+
+      <nuxt-link to="/" class="back">
+        back
+      </nuxt-link>
+    </div>
     <div class="sections">
       <div class="group">
         <div v-for="article in articles" :key="article.id" class="section">
@@ -22,18 +34,23 @@
 </template>
 
 <script>
-import { allArticlesQuery } from '../graphql/queries'
+import { singleArticleQuery } from '../graphql/queries'
 
 export default {
   data () {
     return {
-      articles: []
+      article: []
     }
   },
   apollo: {
-    articles: {
+    article: {
       prefetch: true,
-      query: allArticlesQuery
+      query: singleArticleQuery,
+      variables () {
+        return {
+          id: this.$route.query.id
+        }
+      }
     }
   }
 }
@@ -49,6 +66,11 @@ export default {
   text-transform: uppercase;
   margin: 4rem auto;
   font-size: 4rem;
+}
+
+.back {
+  color: #42b883;
+  text-decoration: underline;
 }
 .img {
   display: block;
@@ -89,7 +111,7 @@ p {
 }
 
 .section {
-margin-bottom: 3rem;
+  margin-bottom: 3rem;
 }
 
 .group {
